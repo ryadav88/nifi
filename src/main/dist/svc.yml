@@ -1,0 +1,99 @@
+name: {{FRAMEWORK_NAME}}
+scheduler:
+  principal: {{FRAMEWORK_PRINCIPAL}}
+  zookeeper: {{FRAMEWORK_ZOOKEEPER}}
+  user: {{FRAMEWORK_USER}}
+pods:
+  nifi:
+    count: {{NODE_COUNT}}
+    placement: '{{{NODE_PLACEMENT_CONSTRAINTS}}}'
+    {{#ENABLE_VIRTUAL_NETWORK}}
+    networks:
+      {{VIRTUAL_NETWORK_NAME}}:
+        labels: {{VIRTUAL_NETWORK_PLUGIN_LABELS}}
+    {{/ENABLE_VIRTUAL_NETWORK}}
+    rlimits:
+      RLIMIT_NOFILE:
+        soft: {{NODE_RLIMIT_NOFILE_SOFT}}
+        hard: {{NODE_RLIMIT_NOFILE_HARD}}
+      RLIMIT_NPROC:
+        soft: {{NODE_RLIMIT_NPROC_SOFT}}
+        hard: {{NODE_RLIMIT_NPROC_HARD}}
+    resource-sets:
+      node-resources:
+        cpus: {{NODE_CPUS}}
+        memory: {{NODE_MEM}}
+        ports:
+          web:
+            port: {{NODE_PORT}}
+            env-key: PORT_WEB
+            advertise: true
+            vip:
+              prefix: {{NODE_VIP_PREFIX}}
+              port: {{NODE_VIP_PORT}}
+          protocol:
+            port: {{NIFI_CLUSTER_NODE_PROTOCOL_PORT}}
+            env-key: PORT_PROTOCOL
+        volumes:
+          database-repository:
+            path: {{NODE_DATABASE_REPOSITORY_DISK_PATH}}
+            type: {{NODE_DATABASE_REPOSITORY_DISK_TYPE}}
+            size: {{NODE_DATABASE_REPOSITORY_DISK_SIZE}}
+          flowfile-repository:
+            path: {{NODE_FLOWFILE_REPOSITORY_DISK_PATH}}
+            type: {{NODE_FLOWFILE_REPOSITORY_DISK_TYPE}}
+            size: {{NODE_FLOWFILE_REPOSITORY_DISK_SIZE}}
+          provenance-repository:
+            path: {{NODE_PROVENANCE_REPOSITORY_DISK_PATH}}
+            type: {{NODE_PROVENANCE_REPOSITORY_DISK_TYPE}}
+            size: {{NODE_PROVENANCE_REPOSITORY_DISK_SIZE}}
+          content-repository:
+            path: {{NODE_CONTENT_REPOSITORY_DISK_PATH}}
+            type: {{NODE_CONTENT_REPOSITORY_DISK_TYPE}}
+            size: {{NODE_CONTENT_REPOSITORY_DISK_SIZE}}
+    uris:
+      - {{JAVA_URI}}
+      - {{BOOTSTRAP_URI}}
+      - {{NIFI_BOOTSTRAP_URI}}
+      - {{NIFI_URI}}
+    tasks:
+      node:
+        resource-set: node-resources
+        goal: RUNNING
+        cmd: ./bootstrap && export JAVA_HOME=$(ls -d $MESOS_SANDBOX/jre*/) && export JAVA_HOME=${JAVA_HOME%/} && export PATH=$(ls -d $JAVA_HOME/bin):$PATH && ./nifi-${NIFI_VERSION}/bin/nifi.sh run
+        configs:
+          nifi.properties:
+            template: nifi.properties.mustache
+            dest: nifi-{{NIFI_VERSION}}/conf/nifi.properties
+          authorizers.xml:
+            template: authorizers.xml.mustache
+            dest: nifi-{{NIFI_VERSION}}/conf/authorizers.xml
+          login-identity-providers.xml:
+            template: login-identity-providers.xml.mustache
+            dest: nifi-{{NIFI_VERSION}}/conf/login-identity-providers.xml
+          bootstrap.conf:
+            template: bootstrap.conf.mustache
+            dest: nifi-{{NIFI_VERSION}}/conf/bootstrap.conf
+        env:
+          NODE_COUNT: {{NODE_COUNT}}
+          NODE_CPUS: {{NODE_CPUS}}
+          NODE_MEM: {{NODE_MEM}}
+plans:
+  deploy:
+    strategy: serial
+    phases:
+      node-deploy:
+        strategy: {{DEPLOY_STRATEGY}}
+        pod: nifi
+  update:
+    strategy: serial
+    phases:
+      node-update:
+        strategy: {{UPDATE_STRATEGY}}
+        pod: nifi
+  replace:
+    strategy: serial
+    phases:
+      node-replace:
+        strategy: {{REPLACE_STRATEGY}}
+        pod: nifi

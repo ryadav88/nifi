@@ -1,0 +1,22 @@
+{
+  "packagingVersion": "4.0",
+  "upgradesFrom": ["{{upgrades-from}}"],
+  "downgradesTo": ["{{downgrades-to}}"],
+  "minDcosReleaseVersion": "1.9",
+  "name": "nifi",
+  "version": "{{package-version}}",
+  "maintainer": "support+nifi@mesosphere.io",
+  "description": "Apache NiFi running on DC/OS",
+  "scm": "https://github.com/vishnu2kmohan/dcos-commons.git",
+  "website": "https://github.com/vishnu2kmohan/dcos-commons",
+  "selected": false,
+  "framework": true,
+  "tags": [
+    "nifi",
+    "etl",
+    "workflow"
+  ],
+  "preInstallNotes": "WARNING! The DC/OS Apache NiFi Service is currently in Alpha!\n\n\tThere may be bugs, incomplete features, incorrect documentation, or other discrepancies.",
+  "postInstallNotes": "The DC/OS Apache NiFi is being installed!\n\n\tDocumentation: http://docs.mesosphere.com/service-docs\n\tIssues: http://jira.dcos.io",
+  "postUninstallNotes": "The DC/OS Apache NiFi has been uninstalled."
+}

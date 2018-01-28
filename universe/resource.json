@@ -1,0 +1,43 @@
+{
+  "assets": {
+    "uris": {
+      "jre-tar-gz": "{{jre-jce-unlimited-url}}",
+      "libmesos-bundle-tar-gz": "{{libmesos-bundle-url}}",
+      "bootstrap-zip": "{{artifact-dir}}/bootstrap.zip",
+      "scheduler-zip": "{{artifact-dir}}/nifi-scheduler.zip",
+      "executor-zip": "{{artifact-dir}}/executor.zip",
+      "nifi-tar-gz" : "https://s3.amazonaws.com/vishnu-mohan/nifi/nifi-1.5.0-bin.tar.gz",
+      "nifi-bootstrap" : "https://s3.amazonaws.com/vishnu-mohan/nifi/nifi-bootstrap"
+    }
+  },
+  "images": {
+    "icon-small": "https://s3.amazonaws.com/vishnu-mohan/nifi/nifi_small.png",
+    "icon-medium": "https://s3.amazonaws.com/vishnu-mohan/nifi/nifi_medium.png",
+    "icon-large": "https://s3.amazonaws.com/vishnu-mohan/nifi/nifi_large.png"
+  },
+  "cli":{
+    "binaries":{
+      "darwin":{
+        "x86-64":{
+          "contentHash":[ { "algo":"sha256", "value":"{{sha256:dcos-service-cli-darwin}}" } ],
+          "kind":"executable",
+          "url":"{{artifact-dir}}/dcos-service-cli-darwin"
+        }
+      },
+      "linux":{
+        "x86-64":{
+          "contentHash":[ { "algo":"sha256", "value":"{{sha256:dcos-service-cli-linux}}" } ],
+          "kind":"executable",
+          "url":"{{artifact-dir}}/dcos-service-cli-linux"
+        }
+      },
+      "windows":{
+        "x86-64":{
+          "contentHash":[ { "algo":"sha256", "value":"{{sha256:dcos-service-cli.exe}}" } ],
+          "kind":"executable",
+          "url":"{{artifact-dir}}/dcos-service-cli.exe"
+        }
+      }
+    }
+  }
+}
