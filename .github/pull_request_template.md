@@ -13,5 +13,5 @@ Before closing any issue and merging the PR, make sure we have:
 - [ ] Service Guide updates 
 
 ### Code Review
-- [ ] Development team (TCS team) code reviews are required on all pull requests for new features 
+- [ ] Development team code reviews are required on all pull requests for new features 
 
